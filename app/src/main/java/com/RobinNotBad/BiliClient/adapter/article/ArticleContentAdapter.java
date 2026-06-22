@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -153,12 +153,12 @@ public class ArticleContentAdapter extends RecyclerView.Adapter<ArticleContentAd
                     intent.putExtra("mid", articleInfo.upInfo.mid);
                     context.startActivity(intent);
                 });
-                ImageButton like = holder.itemView.findViewById(R.id.btn_like);
-                ImageButton coin = holder.itemView.findViewById(R.id.btn_coin);
+                ImageView like = holder.itemView.findViewById(R.id.btn_like);
+                ImageView coin = holder.itemView.findViewById(R.id.btn_coin);
                 TextView likeLabel = holder.itemView.findViewById(R.id.like_label);
                 TextView coinLabel = holder.itemView.findViewById(R.id.coin_label);
                 TextView favLabel = holder.itemView.findViewById(R.id.fav_label);
-                ImageButton fav = holder.itemView.findViewById(R.id.btn_fav);
+                ImageView fav = holder.itemView.findViewById(R.id.btn_fav);
 
                 likeLabel.setText(StringUtil.toWan(articleInfo.stats.like));
                 coinLabel.setText(StringUtil.toWan(articleInfo.stats.coin));

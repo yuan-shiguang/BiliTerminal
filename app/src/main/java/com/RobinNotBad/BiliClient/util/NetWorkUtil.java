@@ -136,6 +136,22 @@ public class NetWorkUtil {
         throw new JSONException("在访问" + url + "时返回数据为空");
     }
 
+    public static JSONObject getJsonNoCookie(String url) throws IOException, JSONException {
+        ArrayList<String> headers = new ArrayList<>(webHeaders);
+        headers.set(1, "");
+        String bodyString = getBodyStringWithDoctypeRetry(url, headers);
+        if (bodyString != null) return new JSONObject(bodyString);
+        throw new JSONException("在访问" + url + "时返回数据为空");
+    }
+
+    public static JSONObject getJsonPrivacy(String url) throws IOException, JSONException {
+        ArrayList<String> headers = new ArrayList<>(webHeaders);
+        headers.set(1, CookieGenerator.getCookieString(false));
+        String bodyString = getBodyStringWithDoctypeRetry(url, headers);
+        if (bodyString != null) return new JSONObject(bodyString);
+        throw new JSONException("在访问" + url + "时返回数据为空");
+    }
+
     public static Response get(String url) throws IOException {
         return get(url, webHeaders);
     }
@@ -423,7 +439,8 @@ public class NetWorkUtil {
     }};
 
     public static void refreshHeaders() {
-        webHeaders.set(1, SharedPreferencesUtil.getString(SharedPreferencesUtil.cookies, ""));
+        CookieGenerator.ensureCookies();
+        webHeaders.set(1, CookieGenerator.getCookieString(true));
     }
 
     public static class FormData {

@@ -96,7 +96,7 @@
         <item>如果生命进入了倒计时，就请让她像绚丽的烟火一样绽放吧。\n\n#投稿者：热热的凉菜</item>
         <item>这个世界虽不美好，但只有书写自己的故事，自我认同，才能获得新生！ \n#写给TJX\n\n#投稿者：夏天里的山日</item>
         <item>世界既不黑也不白，而是一道精致的灰\n——英雄联盟 卡密尔\n有人说我是过了河的卒子，无法回头了，可有些棋子，这辈子也过不了河\n\n#投稿者：被暴打的悬悬</item>
-        <item>Android12--最便携的搞机版本，平民化、单机化的开始(个人观点)\n\n#投稿者##数据丢失##</item>
+        <item>Android12—最便携的搞机版本，平民化、单机化的开始(个人观点)\n\n#投稿者##数据丢失##</item>
         <item>世界向左，哈夫克向右，但是无论你选择哪一方，请谨记，G.T.I.服务于所有国家\n\n#投稿者：澜澈LanChe</item>
         <item>我宁愿被遗忘，\n也不愿被定义。\n#献给奥赫玛第一任也是最后一任女皇——刻律德菈\n\n#投稿者##数据丢失##</item>
         <item>我们不能改变从前，但是可以过好现在，谢谢终端陪我喵，宝宝们天天开心\n\n#投稿者：汉堡鸭</item>
@@ -104,7 +104,7 @@
         <item>Don\'t care about worldly eyes. Go and pursue your own light\n不必在意世俗的眼光，去追寻属于你的光。\n\n#投稿者：玖拾玖玖玖</item>
         <item>Knock knock!Let me go in and get the ace.\nYou\'ll paint your face with tears that don\'t feel the same.\nNow Heart Reinforce\'s up to end this game.\nYou\'d better give up and throw your MP5 away\n咚咚！让我进去拿王牌。你会用不一样的眼泪涂在脸上。现在心脏强化要结束这场比赛了。你最好放弃，把你的MP5扔掉.\n-《ヒバナ》\n\n#投稿者：ハロー、ワールド!</item>
 
-        <item>呐呐？这里没有更多彩蛋了呢＞﹏＜\n\n欢迎你的投稿哦？</item>
+        <item>嗯呐？这里没有更多彩蛋了呢＞﹏＜\n\n欢迎你的投稿哦？</item>
     </string-array>
 
     <string name="player_package_aliang">com.aliangmaker.media</string>
@@ -142,6 +142,7 @@
     <string name="desc_subtitle_ai_allowed">打开此选项，如果视频只有一个中文AI字幕，播放时仍然会让你选择。\n可能比较烦人，谨慎开启。</string>
     <string name="desc_no_vip_color">开启此选项后，将不会在评论区为大会员用户显示专属的红色名称</string>
     <string name="desc_no_medal">开启此选项后，将不会在评论区显示用户的粉丝铭牌</string>
+    <string name="desc_privacy_mode">开启后，浏览视频详情和播放视频时不会记录到B站历史记录中。\n仍可享受登录账号的高清画质，但视频详情页不会显示你的点赞/投币/收藏状态。</string>
     <string name="desc_reply_marquee_name">开启此选项后，评论区的用户名称将会以跑马灯的形式展现，而不是换行</string>
     <string name="desc_live_by_guest">开启此选项后，进入直播间时将会使用游客身份\n\n注意：开启后的漏弹幕情况将会更加严重</string>
     <string name="desc_dynamic_update_check_enable">启动应用时检查是否有新动态并显示在菜单中</string>
@@ -150,7 +151,7 @@
     <string name="desc_private_msg_unread_badge_enable">在私信会话列表中为未读消息显示红色"未读"标记并置顶显示\n注意：开启后打开消息页面可能会加剧卡顿问题。</string>
     <string name="desc_private_msg_auto_read_enable">打开私信会话时自动将会话标记为已读</string>
     <string name="desc_follow_group_mode">以分组形式展示关注列表</string>
-    <string name="desc_night_reminder">在23:00-03:00期间打开应用时显示休息提醒</string>
+    <string name="desc_night_reminder">在23:00–03:00期间打开应用时显示休息提醒</string>
     <string name="section_ui_size">界面大小</string>
     <string name="desc_setup_ui_size">有效范围：0.25倍-5.00倍，建议少量多次调节</string>
     <string name="text_ui_padding_horizontal">横向</string>
@@ -239,21 +240,14 @@
     <string name="percent">%</string>
 
     <string name="use_tip">如果你在部分页面出现了无法加载的问题（如推荐列表等），请尝试退出登录后重新登录。</string>
-    <string name="update_tip">如果你是跨版本更新到这个版本的，可以前往官网biliterminal.cn查看过往的更新日志。\n\n此版本的更新内容完全由爅峫开发，如遇到使用问题，请勿打扰RobinNotBad。\n为了防止被函，哔哩终端已经宣布停更，此版本应该可能大概也许将会成为最后一个哔哩终端的官方正式版，我已经把几乎所有能加的接口功能都加进这个版本了，祝各位使用愉快，后会有期。\n       ——爅峫（moye）</string>
+    <string name="update_tip">此版本为非官方分支，使用过程中出现的问题请勿在官方群聊反馈。\n本项目开源地址：https://github.com/PianoEthan/BiliTerminal</string>
 
     #新增功能放到上面，修复问题放下面，方便用户看见
     <string-array name="update_log_items">
-        <item>增加了内置播放器双击是否优先还原屏幕而不是优先暂停的设置项</item>
-        <item>增加了内置播放器双击快退快进时屏幕中央的双击暂停区域</item>
-        <item>增加了风控问题下的短时间多次重试</item>
-        <item>修复了番剧时间线页面无法正常退出的问题</item>
-        <item>修复了内置播放器双击快进快退和双击暂停冲突的问题</item>
-        <item>修复了动态和专栏详情中的点赞、收藏等和时间的展示</item>
-        <item>修复了私聊中的动态分享无法正常显示、跳转的问题</item>
-        <item>修复了部分动态、专栏无法查看的问题</item>
-        <item>修复了动态详情的点赞功能</item>
-        <item>修复了2.9.7fix1中直播功能无法正常使用的问题</item>
-        <item>修复了2.9.7fix1中打开即崩的问题</item>
+        <item>增加隐私模式，开启后看视频不记录历史</item>
+        <item>对原有的脆弱解析逻辑进行了较大重构</item>
+        <item>修复原版未登录下无法看视频的问题</item>
+        <item>修复搜索界面表冠滚动异常的问题(直接把组件替换了)</item>
     </string-array>
 
     <string name="tutorial_pager">提示\n\n←这个页面可以左右翻页喵→\n\n（共有%d页，滑动一下不再显示）</string>

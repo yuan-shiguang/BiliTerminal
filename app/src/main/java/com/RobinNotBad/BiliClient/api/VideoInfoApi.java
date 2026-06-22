@@ -13,6 +13,7 @@ import com.RobinNotBad.BiliClient.model.VideoInfo;
 import com.RobinNotBad.BiliClient.util.GsonUtil;
 import com.RobinNotBad.BiliClient.util.Logu;
 import com.RobinNotBad.BiliClient.util.NetWorkUtil;
+import com.RobinNotBad.BiliClient.util.SharedPreferencesUtil;
 import com.RobinNotBad.BiliClient.util.StringUtil;
 import com.google.gson.annotations.SerializedName;
 
@@ -201,7 +202,8 @@ public class VideoInfoApi {
 
     public static VideoInfo getVideoInfo(String bvid) throws IOException, JSONException {
         String url = "https://api.bilibili.com/x/web-interface/view?bvid=" + bvid;
-        String json = NetWorkUtil.getJson(url).toString();
+        boolean privacyMode = SharedPreferencesUtil.getBoolean(SharedPreferencesUtil.PRIVACY_MODE, false);
+        String json = privacyMode ? NetWorkUtil.getJsonPrivacy(url).toString() : NetWorkUtil.getJson(url).toString();
         ApiResponse<VideoInfoData> resp = GsonUtil.fromJson(json,
                 new com.google.gson.reflect.TypeToken<ApiResponse<VideoInfoData>>(){}.getType());
         if (resp == null || !resp.isSuccess() || resp.data == null) return null;
@@ -212,7 +214,8 @@ public class VideoInfoApi {
 
     public static VideoInfo getVideoInfo(long aid) throws IOException, JSONException {
         String url = "https://api.bilibili.com/x/web-interface/view?aid=" + aid;
-        String json = NetWorkUtil.getJson(url).toString();
+        boolean privacyMode = SharedPreferencesUtil.getBoolean(SharedPreferencesUtil.PRIVACY_MODE, false);
+        String json = privacyMode ? NetWorkUtil.getJsonPrivacy(url).toString() : NetWorkUtil.getJson(url).toString();
         ApiResponse<VideoInfoData> resp = GsonUtil.fromJson(json,
                 new com.google.gson.reflect.TypeToken<ApiResponse<VideoInfoData>>(){}.getType());
         if (resp == null || !resp.isSuccess() || resp.data == null) return null;

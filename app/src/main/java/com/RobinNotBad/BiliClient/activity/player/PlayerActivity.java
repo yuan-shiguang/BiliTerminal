@@ -69,6 +69,7 @@ import com.RobinNotBad.BiliClient.ui.widget.BatteryView;
 import com.RobinNotBad.BiliClient.ui.widget.HighEnergyProgressBar;
 import com.RobinNotBad.BiliClient.ui.widget.recycler.CustomLinearManager;
 import com.RobinNotBad.BiliClient.util.CenterThreadPool;
+import com.RobinNotBad.BiliClient.util.CookieGenerator;
 import com.RobinNotBad.BiliClient.util.Logu;
 import com.RobinNotBad.BiliClient.util.MsgUtil;
 import com.RobinNotBad.BiliClient.util.NetWorkUtil;
@@ -881,7 +882,7 @@ public class PlayerActivity extends Activity implements IjkMediaPlayer.OnPrepare
             if (isOnlineVideo) {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Referer", "https://www.bilibili.com/");
-                headers.put("Cookie", SharedPreferencesUtil.getString(SharedPreferencesUtil.cookies, ""));
+                headers.put("Cookie", CookieGenerator.getCookieString(true));
                 ijkPlayer.setDataSource(nowurl, headers);
             } else
                 ijkPlayer.setDataSource(nowurl);
@@ -1815,7 +1816,7 @@ public class PlayerActivity extends Activity implements IjkMediaPlayer.OnPrepare
                 ArrayList<String> mHeaders = new ArrayList<>() {
                     {
                         add("Cookie");
-                        add(SharedPreferencesUtil.getString(SharedPreferencesUtil.cookies, ""));
+                        add(CookieGenerator.getCookieString(true));
                         add("Referer");
                         add("https://live.bilibili.com/" + aid);
                         add("Origin");
@@ -1835,7 +1836,7 @@ public class PlayerActivity extends Activity implements IjkMediaPlayer.OnPrepare
                 okHttpClient = new OkHttpClient();
                 Request request = new Request.Builder()
                         .url(url)
-                        .header("Cookie", SharedPreferencesUtil.getString(SharedPreferencesUtil.cookies, ""))
+                        .header("Cookie", CookieGenerator.getCookieString(true))
                         .header("Origin", "https://live.bilibili.com")
                         .header("User-Agent", USER_AGENT_WEB)
                         .build();

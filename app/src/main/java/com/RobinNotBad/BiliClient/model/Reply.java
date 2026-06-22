@@ -54,8 +54,12 @@ public class Reply implements Serializable {
         this.parent = replyJson.optLong("parent", 0);
 
         JSONObject memberJson = replyJson.optJSONObject("member");
-        if (memberJson == null) throw new JSONException("member is null");
-        this.sender = new UserInfo(memberJson);
+        if (memberJson == null) {
+            this.sender = new UserInfo();
+            this.sender.name = "已注销用户";
+        } else {
+            this.sender = new UserInfo(memberJson);
+        }
 
         JSONObject content = replyJson.optJSONObject("content");
         if (content == null) throw new JSONException("content is null");

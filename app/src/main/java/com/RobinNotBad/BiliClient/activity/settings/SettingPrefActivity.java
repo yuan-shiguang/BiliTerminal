@@ -25,6 +25,7 @@ public class SettingPrefActivity extends RefreshListActivity {
         final List<SettingSection> sectionList = new ArrayList<>() {
             {
                 add(new SettingSection("title", "功能", "", "", ""));
+                add(new SettingSection("switch", "隐私模式", SharedPreferencesUtil.PRIVACY_MODE, getString(R.string.desc_privacy_mode), "false"));
                 add(new SettingSection("switch", "长按复制", "copy_enable", getString(R.string.desc_copy_enable), "true"));
                 add(new SettingSection("switch", "创作中心", "creative_enable", getString(R.string.desc_creative_enable),
                         "true"));

@@ -31,6 +31,7 @@ public class SharedPreferencesUtil {
     public static final String RECENT_UP_DISPLAY_ENABLE = "recent_up_display_enable";
     public static final String API_RETRY_INTERVAL_SECONDS = "api_retry_interval_seconds";
     public static final String API_RETRY_MAX_TIMES = "api_retry_max_times";
+    public static final String PRIVACY_MODE = "privacy_mode";
 
     public static String cookies = "cookies";
     public static String mid = "mid";

@@ -15,6 +15,7 @@ import com.RobinNotBad.BiliClient.util.Result;
 import com.RobinNotBad.BiliClient.util.SharedPreferencesUtil;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -74,7 +75,7 @@ public class ReplyApi {
 
     public static class ReplyRootData {
         @SerializedName("root")
-        public JSONObject root;
+        public JsonElement root;
     }
 
     public static class ReplyCountData {
@@ -107,7 +108,8 @@ public class ReplyApi {
             ApiResponse<ReplyRootData> resp = GsonUtil.fromJson(json, new com.google.gson.reflect.TypeToken<ApiResponse<ReplyRootData>>(){}.getType());
             if (resp == null || resp.code != 0 || resp.data == null || resp.data.root == null)
                 return Result.failure(new Exception("未找到根评论"));
-            return Result.success(new Reply(true, resp.data.root));
+            JSONObject rootJson = new JSONObject(resp.data.root.toString());
+            return Result.success(new Reply(true, rootJson));
         } catch (Exception e) { return Result.failure(e); }
     }
 

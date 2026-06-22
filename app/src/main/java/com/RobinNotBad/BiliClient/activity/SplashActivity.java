@@ -74,6 +74,8 @@ public class SplashActivity extends Activity {
             //FileUtil.clearCache(this);  //先清个缓存（为了防止占用过大）
             //不需要了，我把大部分图片的硬盘缓存都关闭了，只有表情包保留，这样既可以缩减缓存占用又能在一定程度上减少流量消耗
 
+            NetWorkUtil.refreshHeaders();
+
             if (SharedPreferencesUtil.getBoolean(SharedPreferencesUtil.setup, false)) {//判断是否设置完成
                 try {
                     // 未登录时请求bilibili.com
