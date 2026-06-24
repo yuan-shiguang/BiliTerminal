@@ -5,7 +5,6 @@ import com.RobinNotBad.BiliClient.model.DmSegMobileReply;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
 /**
  * Protobuf 解析器
@@ -179,7 +178,7 @@ public class ProtobufParser {
         if (bytesRead != length) {
             throw new IOException("Unexpected end of stream");
         }
-        return new String(bytes, StandardCharsets.UTF_8);
+        return new String(bytes, CompatUtil.getCharsetUTF8());
     }
 
     /**

@@ -1,17 +1,10 @@
 package com.RobinNotBad.BiliClient.api;
 
-import com.RobinNotBad.BiliClient.model.ApiResponse;
-import com.RobinNotBad.BiliClient.model.ArticleCard;
-import com.RobinNotBad.BiliClient.model.LiveRoom;
-import com.RobinNotBad.BiliClient.model.UserInfo;
-import com.RobinNotBad.BiliClient.model.VideoCard;
-import com.RobinNotBad.BiliClient.util.DmImgParamUtil;
-import com.RobinNotBad.BiliClient.util.GsonUtil;
-import com.RobinNotBad.BiliClient.util.NetWorkUtil;
-import com.RobinNotBad.BiliClient.util.SharedPreferencesUtil;
-import com.RobinNotBad.BiliClient.util.StringUtil;
+import android.util.Log;
+import com.RobinNotBad.BiliClient.model.*;
+import com.RobinNotBad.BiliClient.util.*;
 import com.google.gson.annotations.SerializedName;
-
+import okhttp3.MediaType;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -19,12 +12,9 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
 import java.util.zip.GZIPInputStream;
-import android.util.Log;
-import okhttp3.Response;
 
 public class UserInfoApi {
 
@@ -454,10 +444,10 @@ public class UserInfoApi {
         if ("br".equalsIgnoreCase(contentEncoding)) {
             // Brotli解压
             try {
-                responseStr = new String(com.netease.hearttouch.brotlij.Brotli.decompress(bodyBytes), StandardCharsets.UTF_8);
+                responseStr = new String(com.netease.hearttouch.brotlij.Brotli.decompress(bodyBytes), CompatUtil.getCharsetUTF8());
             } catch (Exception e) {
                 Log.e("UpdateUserInfo", "Brotli解压失败: " + e.getMessage());
-                responseStr = new String(bodyBytes, StandardCharsets.UTF_8);
+                responseStr = new String(bodyBytes, CompatUtil.getCharsetUTF8());
             }
         } else if ("gzip".equalsIgnoreCase(contentEncoding)) {
             // Gzip解压
@@ -471,7 +461,7 @@ public class UserInfoApi {
                 responseStr = sb.toString();
             }
         } else {
-            responseStr = new String(bodyBytes, StandardCharsets.UTF_8);
+            responseStr = new String(bodyBytes, CompatUtil.getCharsetUTF8());
         }
         
         Log.e("UpdateUserInfo", "Response Length: " + responseStr.length());
@@ -528,7 +518,7 @@ public class UserInfoApi {
         Log.e("AvatarUpload", "Cookie: " + cookieStr);
         Log.e("AvatarUpload", "File name: " + fileName + ", Size: " + imageData.length);
 
-        okhttp3.RequestBody fileBody = okhttp3.RequestBody.create(okhttp3.MediaType.parse("image/jpeg"), imageData);
+        okhttp3.RequestBody fileBody = okhttp3.RequestBody.create(Objects.requireNonNull(MediaType.parse("image/jpeg")), imageData);
         
         okhttp3.MultipartBody multipartBody = new okhttp3.MultipartBody.Builder()
                 .setType(okhttp3.MultipartBody.FORM)
@@ -569,10 +559,10 @@ public class UserInfoApi {
         if ("br".equalsIgnoreCase(contentEncoding)) {
             // Brotli解压
             try {
-                responseStr = new String(com.netease.hearttouch.brotlij.Brotli.decompress(bodyBytes), StandardCharsets.UTF_8);
+                responseStr = new String(com.netease.hearttouch.brotlij.Brotli.decompress(bodyBytes), CompatUtil.getCharsetUTF8());
             } catch (Exception e) {
                 Log.e("AvatarUpload", "Brotli解压失败: " + e.getMessage());
-                responseStr = new String(bodyBytes, StandardCharsets.UTF_8);
+                responseStr = new String(bodyBytes, CompatUtil.getCharsetUTF8());
             }
         } else if ("gzip".equalsIgnoreCase(contentEncoding)) {
             // Gzip解压
@@ -586,7 +576,7 @@ public class UserInfoApi {
                 responseStr = sb.toString();
             }
         } else {
-            responseStr = new String(bodyBytes, StandardCharsets.UTF_8);
+            responseStr = new String(bodyBytes, CompatUtil.getCharsetUTF8());
         }
         
         Log.e("AvatarUpload", "Response Length: " + responseStr.length());

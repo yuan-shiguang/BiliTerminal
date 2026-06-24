@@ -3,13 +3,10 @@ package com.RobinNotBad.BiliClient.activity.dynamic;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
-
 import com.RobinNotBad.BiliClient.R;
 import com.RobinNotBad.BiliClient.activity.base.BaseActivity;
 import com.RobinNotBad.BiliClient.activity.reply.ReplyFragment;
@@ -20,7 +17,6 @@ import com.RobinNotBad.BiliClient.helper.TutorialHelper;
 import com.RobinNotBad.BiliClient.util.AnimationUtils;
 import com.RobinNotBad.BiliClient.util.MsgUtil;
 import com.RobinNotBad.BiliClient.util.TerminalContext;
-
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -61,17 +57,9 @@ public class DynamicInfoActivity extends BaseActivity {
                     ViewPagerFragmentAdapter vpfAdapter = new ViewPagerFragmentAdapter(getSupportFragmentManager(), fragmentList);
                     ViewPager viewPager = findViewById(R.id.viewPager);
                     viewPager.setAdapter(vpfAdapter);  //没啥好说的，教科书式的ViewPager使用方法
-                    View view;
-                    if ((view = diFragment.getView()) != null) view.setVisibility(View.GONE);
                     if (seek_reply != -1) viewPager.setCurrentItem(1);
 
-                    AnimationUtils.crossFade(findViewById(R.id.loading), diFragment.getView());
-                    diFragment.getView().post(() -> {
-                        View scrollView = diFragment.getView().findViewById(R.id.scrollView);
-                        scrollView.setFocusable(true);
-                        scrollView.setFocusableInTouchMode(true);
-                        scrollView.requestFocus();
-                    });
+                    AnimationUtils.fadeOut(findViewById(R.id.loading), 100);
                     TutorialHelper.showPagerTutorial(this, 2);
                 }).onFailure((e) -> {
                     MsgUtil.err(e);

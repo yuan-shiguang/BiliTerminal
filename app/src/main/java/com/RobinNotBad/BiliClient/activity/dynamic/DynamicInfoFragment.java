@@ -92,6 +92,9 @@ public class DynamicInfoFragment extends BaseFragment {
             childCard.setVisibility(View.VISIBLE);
         }
 
+        scrollView.setFocusable(true);
+        scrollView.setFocusableInTouchMode(true);
+        scrollView.requestFocus();
     }
 
 }

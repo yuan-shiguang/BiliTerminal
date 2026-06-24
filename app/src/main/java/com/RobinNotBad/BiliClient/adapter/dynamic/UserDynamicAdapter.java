@@ -40,7 +40,7 @@ import com.RobinNotBad.BiliClient.ui.widget.RadiusBackgroundSpan;
 import com.RobinNotBad.BiliClient.util.CenterThreadPool;
 import com.RobinNotBad.BiliClient.util.GlideUtil;
 
-import org.json.JSONObject;
+import com.RobinNotBad.BiliClient.util.CompatUtil;
 import com.RobinNotBad.BiliClient.util.MsgUtil;
 import com.RobinNotBad.BiliClient.util.SharedPreferencesUtil;
 import com.RobinNotBad.BiliClient.util.StringUtil;
@@ -395,13 +395,13 @@ public class UserDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                                 if (electric_expand) {
                                     this.electricUserList.setVisibility(View.VISIBLE);
                                     this.electricPanelDivider.setVisibility(View.VISIBLE);
-                                    this.electricPanelHeader.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                                            0, 0, R.drawable.arrow_up, 0);
+                                    CompatUtil.setCompoundDrawablesRelative(
+                                            this.electricPanelHeader, 0, 0, R.drawable.arrow_up, 0);
                                 } else {
                                     this.electricUserList.setVisibility(View.GONE);
                                     this.electricPanelDivider.setVisibility(View.GONE);
-                                    this.electricPanelHeader.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                                            0, 0, R.drawable.arrow_down, 0);
+                                    CompatUtil.setCompoundDrawablesRelative(
+                                            this.electricPanelHeader, 0, 0, R.drawable.arrow_down, 0);
                                 }
                             });
                         });

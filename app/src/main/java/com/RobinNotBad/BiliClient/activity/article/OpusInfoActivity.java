@@ -76,7 +76,7 @@ public class OpusInfoActivity extends BaseActivity {
                     viewPager.setAdapter(vpfAdapter);
                     if (seek_reply != -1) viewPager.setCurrentItem(1);
 
-                    AnimationUtils.crossFade(loadingView, oiFragment.getView());
+                    AnimationUtils.fadeOut(loadingView, 100);
                     TutorialHelper.showPagerTutorial(this, 2);
                 }).onFailure((error) -> {
                     loadingView.setImageResource(R.mipmap.loading_2233_error);
