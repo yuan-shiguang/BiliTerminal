@@ -61,6 +61,7 @@
     <string-array name="eggs">
         <item>恭喜你找到了这个彩蛋喵~再长按几次试试吧？\n\n*此处的彩蛋可能会随着版本更新而变动，如果你看到了这个，也可以向Robin投稿下一个版本的彩蛋哦？</item>
 
+        <item>开源总是有无限的生机,就像大自然样,总会在枯萎的地方,重新长出嫩绿的新枝\n虽Robin停止了开发,但"我们"仍会继续维护与更新,也希望你在腕上玩的愉快\n\n#投稿者：元時光</item>
         <item>Do not go gentle into that good night,\nOld age should burn and rave at close of day;\nRage, rage against the dying of the light.\n\n不要温和地走进那个良夜，\n白昼告终时老人该燃烧、该狂喊；\n该怒斥、怒斥那光明的逐渐消歇。\n\n#——Dylan Thomas\n\n#投稿者：Aqua_ra1n\n\n*以上皆为原文，不要关心英文诗歌的语法问题（</item>
         <item>不断歌唱，直至人类灭绝，世界消亡。哪怕只有一人也会为他继续歌唱下去，虚拟的歌姬，真实的爱。\n\n---- 初音ミク\n\n#投稿者：ハロー、ワールド!</item>
         <item>在这个社会上，我们有许多不得已的事情，你只能做这一件事，你只能上这一个学校，你只能放下，你只能拿起，都说社会上有很多的选择，都说出了社会有很多的路可以走，可是真的有吗？我想，没有，我们有选择，我们却也没有选择我们能做的只有在这个社会里摸爬滚打，以寻求生存之道。\n\n#投稿者：源心</item>
@@ -244,10 +245,14 @@
 
     #新增功能放到上面，修复问题放下面，方便用户看见
     <string-array name="update_log_items">
+        <item>将修改用户描述改为修改个人信息</item>
+        <item>新增修改用户头像,用户描述(原有),用户昵称,用户性别</item>
+        <item>新增长按"推荐"刷新视频</item>
         <item>增加隐私模式，开启后看视频不记录历史</item>
         <item>对原有的脆弱解析逻辑进行了较大重构</item>
         <item>修复原版未登录下无法看视频的问题</item>
         <item>修复搜索界面表冠滚动异常的问题(直接把组件替换了)</item>
+        <item>修改了"我的"-"大会员"图标,"我的"-"登录记录"图标</item>
     </string-array>
 
     <string name="tutorial_pager">提示\n\n←这个页面可以左右翻页喵→\n\n（共有%d页，滑动一下不再显示）</string>

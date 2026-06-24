@@ -15,9 +15,16 @@ import com.google.gson.annotations.SerializedName;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
+import java.util.zip.GZIPInputStream;
+import android.util.Log;
+import okhttp3.Response;
 
 public class UserInfoApi {
 
@@ -359,5 +366,244 @@ public class UserInfoApi {
         String arg = "csrf=" + csrf;
         if (userSign != null) arg += "&user_sign=" + java.net.URLEncoder.encode(userSign, "UTF-8");
         return new org.json.JSONObject(Objects.requireNonNull(NetWorkUtil.post(url, arg, NetWorkUtil.webHeaders).body()).string());
+    }
+
+    // 修改用户资料（昵称/生日/性别/签名）
+    public static org.json.JSONObject updateUserInfo(String uname, String birthday, String sex, String usersign) throws IOException, JSONException {
+        String csrf = NetWorkUtil.getInfoFromCookie("bili_jct", SharedPreferencesUtil.getString(SharedPreferencesUtil.cookies, ""));
+        String sessdata = NetWorkUtil.getInfoFromCookie("SESSDATA", SharedPreferencesUtil.getString(SharedPreferencesUtil.cookies, ""));
+        String dedeUserId = NetWorkUtil.getInfoFromCookie("DedeUserID", SharedPreferencesUtil.getString(SharedPreferencesUtil.cookies, ""));
+        String buvid3 = NetWorkUtil.getInfoFromCookie("buvid3", SharedPreferencesUtil.getString(SharedPreferencesUtil.cookies, ""));
+
+        StringBuilder arg = new StringBuilder();
+        arg.append("csrf=").append(csrf);
+        arg.append("&x-bili-redirect=1");
+        if (uname != null && !uname.isEmpty()) {
+            arg.append("&uname=").append(java.net.URLEncoder.encode(uname, "UTF-8"));
+        }
+        if (birthday != null && !birthday.isEmpty()) {
+            if (!birthday.matches("\\d{4}-\\d{2}-\\d{2}")) {
+                throw new IllegalArgumentException("生日格式必须为YYYY-MM-DD");
+            }
+            arg.append("&birthday=").append(java.net.URLEncoder.encode(birthday, "UTF-8"));
+        }
+        if (sex != null && !sex.isEmpty()) {
+            // 转换性别编码：1->男, 2->女
+            String sexStr = sex;
+            if ("1".equals(sex)) {
+                sexStr = "男";
+            } else if ("2".equals(sex)) {
+                sexStr = "女";
+            }
+            arg.append("&sex=").append(java.net.URLEncoder.encode(sexStr, "UTF-8"));
+        }
+        if (usersign != null) {
+            arg.append("&usersign=").append(java.net.URLEncoder.encode(usersign, "UTF-8"));
+        }
+
+        String url = "https://api.bilibili.com/x/member/web/update";
+        String postData = arg.toString();
+        
+        Log.e("UpdateUserInfo", "URL: " + url);
+        Log.e("UpdateUserInfo", "PostData: " + postData);
+        
+        // 构建Cookie
+        StringBuilder cookieBuilder = new StringBuilder();
+        if (sessdata != null && !sessdata.isEmpty()) cookieBuilder.append("SESSDATA=").append(sessdata).append("; ");
+        if (csrf != null && !csrf.isEmpty()) cookieBuilder.append("bili_jct=").append(csrf).append("; ");
+        if (dedeUserId != null && !dedeUserId.isEmpty()) cookieBuilder.append("DedeUserID=").append(dedeUserId).append("; ");
+        if (buvid3 != null && !buvid3.isEmpty()) cookieBuilder.append("buvid3=").append(buvid3);
+        String cookieStr = cookieBuilder.toString();
+        
+        Log.e("UpdateUserInfo", "Cookie: " + cookieStr);
+
+        // 直接使用OkHttpClient创建请求
+        okhttp3.RequestBody body = okhttp3.RequestBody.create(
+                okhttp3.MediaType.parse("application/x-www-form-urlencoded; charset=utf-8"), postData);
+        
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(url)
+                .post(body)
+                .addHeader("Cookie", cookieStr)
+                .addHeader("Referer", "https://www.bilibili.com/")
+                .addHeader("Origin", "https://account.bilibili.com")
+                .addHeader("User-Agent", "Mozilla/5.0 (Linux; Android 15; Pixel 9) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Mobile Safari/537.36")
+                .addHeader("Accept", "*/*")
+                .addHeader("Accept-Language", "zh-CN,zh;q=0.9,en;q=0.8")
+                .addHeader("Accept-Encoding", "gzip, deflate, br")
+                .addHeader("Sec-Fetch-Dest", "empty")
+                .addHeader("Sec-Fetch-Mode", "cors")
+                .addHeader("Sec-Fetch-Site", "same-site")
+                .build();
+
+        okhttp3.Response response = NetWorkUtil.getOkHttpInstance().newCall(request).execute();
+        okhttp3.ResponseBody respBody = response.body();
+        
+        if (respBody == null) {
+            throw new IOException("响应体为空");
+        }
+        
+        String contentEncoding = response.header("Content-Encoding");
+        Log.e("UpdateUserInfo", "HTTP Code: " + response.code());
+        Log.e("UpdateUserInfo", "Content-Encoding: " + contentEncoding);
+        
+        byte[] bodyBytes = respBody.bytes();
+        Log.e("UpdateUserInfo", "Compressed Length: " + bodyBytes.length);
+        
+        String responseStr;
+        if ("br".equalsIgnoreCase(contentEncoding)) {
+            // Brotli解压
+            try {
+                responseStr = new String(com.netease.hearttouch.brotlij.Brotli.decompress(bodyBytes), StandardCharsets.UTF_8);
+            } catch (Exception e) {
+                Log.e("UpdateUserInfo", "Brotli解压失败: " + e.getMessage());
+                responseStr = new String(bodyBytes, StandardCharsets.UTF_8);
+            }
+        } else if ("gzip".equalsIgnoreCase(contentEncoding)) {
+            // Gzip解压
+            try (GZIPInputStream gzipStream = new GZIPInputStream(new ByteArrayInputStream(bodyBytes));
+                 BufferedReader reader = new BufferedReader(new InputStreamReader(gzipStream, "UTF-8"))) {
+                StringBuilder sb = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line);
+                }
+                responseStr = sb.toString();
+            }
+        } else {
+            responseStr = new String(bodyBytes, StandardCharsets.UTF_8);
+        }
+        
+        Log.e("UpdateUserInfo", "Response Length: " + responseStr.length());
+        Log.e("UpdateUserInfo", "Response: " + (responseStr.length() > 500 ? responseStr.substring(0, 500) + "..." : responseStr));
+        
+        if (responseStr == null || responseStr.trim().isEmpty()) {
+            throw new IOException("响应为空");
+        }
+        
+        try {
+            return new org.json.JSONObject(responseStr);
+        } catch (JSONException e) {
+            Log.e("UpdateUserInfo", "JSON解析失败: " + e.getMessage());
+            org.json.JSONObject errorObj = new org.json.JSONObject();
+            errorObj.put("code", -1);
+            errorObj.put("message", "JSON解析失败: " + responseStr.substring(0, Math.min(100, responseStr.length())));
+            return errorObj;
+        }
+    }
+
+    // 上传头像
+    public static org.json.JSONObject uploadAvatar(byte[] imageData, String fileName) throws IOException, JSONException {
+        String csrf = NetWorkUtil.getInfoFromCookie("bili_jct", SharedPreferencesUtil.getString(SharedPreferencesUtil.cookies, ""));
+        String sessdata = NetWorkUtil.getInfoFromCookie("SESSDATA", SharedPreferencesUtil.getString(SharedPreferencesUtil.cookies, ""));
+        String dedeUserId = NetWorkUtil.getInfoFromCookie("DedeUserID", SharedPreferencesUtil.getString(SharedPreferencesUtil.cookies, ""));
+        String buvid3 = NetWorkUtil.getInfoFromCookie("buvid3", SharedPreferencesUtil.getString(SharedPreferencesUtil.cookies, ""));
+        String biliTicket = NetWorkUtil.getInfoFromCookie("bili_ticket", SharedPreferencesUtil.getString(SharedPreferencesUtil.cookies, ""));
+        String buvid4 = NetWorkUtil.getInfoFromCookie("buvid4", SharedPreferencesUtil.getString(SharedPreferencesUtil.cookies, ""));
+        
+        String url = "https://api.bilibili.com/x/member/web/face/update";
+
+        StringBuilder cookieBuilder = new StringBuilder();
+        if (sessdata != null && !sessdata.isEmpty()) {
+            cookieBuilder.append("SESSDATA=").append(sessdata).append("; ");
+        }
+        if (csrf != null && !csrf.isEmpty()) {
+            cookieBuilder.append("bili_jct=").append(csrf).append("; ");
+        }
+        if (dedeUserId != null && !dedeUserId.isEmpty()) {
+            cookieBuilder.append("DedeUserID=").append(dedeUserId).append("; ");
+        }
+        if (buvid3 != null && !buvid3.isEmpty()) {
+            cookieBuilder.append("buvid3=").append(buvid3).append("; ");
+        }
+        if (buvid4 != null && !buvid4.isEmpty()) {
+            cookieBuilder.append("buvid4=").append(buvid4).append("; ");
+        }
+        if (biliTicket != null && !biliTicket.isEmpty()) {
+            cookieBuilder.append("bili_ticket=").append(biliTicket);
+        }
+        String cookieStr = cookieBuilder.toString();
+        
+        Log.e("AvatarUpload", "CSRF: " + csrf);
+        Log.e("AvatarUpload", "Cookie: " + cookieStr);
+        Log.e("AvatarUpload", "File name: " + fileName + ", Size: " + imageData.length);
+
+        okhttp3.RequestBody fileBody = okhttp3.RequestBody.create(okhttp3.MediaType.parse("image/jpeg"), imageData);
+        
+        okhttp3.MultipartBody multipartBody = new okhttp3.MultipartBody.Builder()
+                .setType(okhttp3.MultipartBody.FORM)
+                .addFormDataPart("csrf", csrf)
+                .addFormDataPart("face", fileName, fileBody)
+                .addFormDataPart("platform", "pc")
+                .addFormDataPart("csrf_token", csrf)
+                .build();
+
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(url)
+                .post(multipartBody)
+                .addHeader("Cookie", cookieStr)
+                .addHeader("Referer", "https://account.bilibili.com/home")
+                .addHeader("Origin", "https://account.bilibili.com")
+                .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36")
+                .addHeader("Accept", "application/json, text/plain, */*")
+                .addHeader("Accept-Language", "zh-CN,zh;q=0.9,en;q=0.8")
+                .addHeader("Accept-Encoding", "gzip, deflate, br")
+                .addHeader("Sec-Fetch-Dest", "empty")
+                .addHeader("Sec-Fetch-Mode", "cors")
+                .addHeader("Sec-Fetch-Site", "same-site")
+                .addHeader("X-Requested-With", "XMLHttpRequest")
+                .build();
+
+        okhttp3.Response resp = NetWorkUtil.getOkHttpInstance().newCall(request).execute();
+        okhttp3.ResponseBody respBody = resp.body();
+        if (respBody == null) throw new IOException("上传响应为空");
+        
+        String contentEncoding = resp.header("Content-Encoding");
+        Log.e("AvatarUpload", "HTTP Code: " + resp.code());
+        Log.e("AvatarUpload", "Content-Encoding: " + contentEncoding);
+        
+        String responseStr;
+        byte[] bodyBytes = respBody.bytes();
+        Log.e("AvatarUpload", "Compressed Length: " + bodyBytes.length);
+        
+        if ("br".equalsIgnoreCase(contentEncoding)) {
+            // Brotli解压
+            try {
+                responseStr = new String(com.netease.hearttouch.brotlij.Brotli.decompress(bodyBytes), StandardCharsets.UTF_8);
+            } catch (Exception e) {
+                Log.e("AvatarUpload", "Brotli解压失败: " + e.getMessage());
+                responseStr = new String(bodyBytes, StandardCharsets.UTF_8);
+            }
+        } else if ("gzip".equalsIgnoreCase(contentEncoding)) {
+            // Gzip解压
+            try (GZIPInputStream gzipStream = new GZIPInputStream(new ByteArrayInputStream(bodyBytes));
+                 BufferedReader reader = new BufferedReader(new InputStreamReader(gzipStream, "UTF-8"))) {
+                StringBuilder sb = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line);
+                }
+                responseStr = sb.toString();
+            }
+        } else {
+            responseStr = new String(bodyBytes, StandardCharsets.UTF_8);
+        }
+        
+        Log.e("AvatarUpload", "Response Length: " + responseStr.length());
+        Log.e("AvatarUpload", "Response: " + (responseStr.length() > 500 ? responseStr.substring(0, 500) + "..." : responseStr));
+        
+        if (responseStr == null || responseStr.trim().isEmpty()) {
+            throw new IOException("响应为空");
+        }
+        
+        try {
+            return new org.json.JSONObject(responseStr);
+        } catch (JSONException e) {
+            Log.e("AvatarUpload", "JSON解析失败: " + e.getMessage());
+            org.json.JSONObject errorObj = new org.json.JSONObject();
+            errorObj.put("code", -1);
+            errorObj.put("message", "JSON解析失败: " + responseStr.substring(0, Math.min(100, responseStr.length())));
+            return errorObj;
+        }
     }
 }

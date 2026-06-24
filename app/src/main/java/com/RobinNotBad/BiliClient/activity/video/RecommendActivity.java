@@ -44,8 +44,9 @@ public class RecommendActivity extends RefreshMainActivity {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private void refreshRecommend() {
+    public void refreshRecommend() {
         Log.e("debug", "刷新");
+        setRefreshing(true);
         if (firstRefresh) {
             videoCardList = new ArrayList<>();
         } else {

@@ -150,8 +150,7 @@ public class MySpaceActivity extends InstanceActivity {
 
                         editSign.setOnClickListener(view -> {
                             Intent intent = new Intent();
-                            intent.setClass(MySpaceActivity.this, EditSignActivity.class);
-                            intent.putExtra("currentSign", userInfo.sign);
+                            intent.setClass(MySpaceActivity.this, EditProfileActivity.class);
                             startActivity(intent);
                         });
 

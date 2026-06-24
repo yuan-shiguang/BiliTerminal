@@ -399,6 +399,16 @@
             android:label="修改描述"
             android:screenOrientation="locked" />
         <activity
+            android:name=".activity.user.EditProfileActivity"
+            android:exported="false"
+            android:label="修改个人信息"
+            android:screenOrientation="locked" />
+        <activity
+            android:name=".activity.user.EditUserInfoActivity"
+            android:exported="false"
+            android:label="修改用户信息"
+            android:screenOrientation="locked" />
+        <activity
             android:name=".activity.user.CreativeCenterActivity"
             android:exported="false"
             android:label="创作中心"

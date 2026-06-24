@@ -30,6 +30,7 @@ import com.RobinNotBad.BiliClient.activity.video.RankingActivity;
 import com.RobinNotBad.BiliClient.activity.video.RecommendActivity;
 import com.RobinNotBad.BiliClient.activity.video.TimelineActivity;
 import com.RobinNotBad.BiliClient.activity.video.local.LocalListActivity;
+import com.RobinNotBad.BiliClient.util.MsgUtil;
 import com.RobinNotBad.BiliClient.util.SharedPreferencesUtil;
 import com.bumptech.glide.Glide;
 import com.google.android.material.button.MaterialButton;
@@ -167,6 +168,22 @@ public class MenuActivity extends BaseActivity {
                     break;
             }
             materialButton.setOnClickListener(view -> killAndJump(btn));
+            // 长按"推荐"刷新视频
+            if (btn.equals("recommend")) {
+                materialButton.setOnLongClickListener(view -> {
+                    if (btn.equals(from)) {
+                        // 当前已在推荐页，发送刷新广播
+                        RecommendActivity activity = (RecommendActivity) BiliTerminal.getInstanceActivityOnTop();
+                        if (activity != null) {
+                            activity.refreshRecommend();
+                        }
+                        finish();
+                    } else {
+                        killAndJump(btn);
+                    }
+                    return true;
+                });
+            }
             layout.addView(materialButton, params);
         }
 
