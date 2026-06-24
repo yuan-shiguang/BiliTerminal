@@ -3,6 +3,8 @@ package com.RobinNotBad.BiliClient.adapter.message;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -73,6 +75,14 @@ public class NoticeHolder extends RecyclerView.ViewHolder {
                 context.startActivity(intent);
             });
             avaterList.addView(imageView);
+
+            TextView nickView = new TextView(context);
+            nickView.setText(message.user.get(i).name);
+            nickView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13);
+            nickView.setGravity(Gravity.CENTER_VERTICAL);
+            nickView.setLayoutParams(new ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT, ToolsUtil.dp2px(32)));
+            avaterList.addView(nickView);
 
             //这个View什么都没有，用来当间隔的
             View view = new View(context);
