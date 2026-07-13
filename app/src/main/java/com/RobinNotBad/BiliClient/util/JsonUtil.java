@@ -30,14 +30,16 @@ public class JsonUtil {
         int i = index + searchKey.length();
         for (int j = i; j < input.length(); j++) {
             char thisChar = input.charAt(j);
-            char nextChar = input.charAt(j + 1);
             if (thisChar == '{' || thisChar == '[') count++;
             if (thisChar == '}' || thisChar == ']') count--;
 
-            if ((nextChar == ',' || nextChar == '}' || nextChar == ']') && count == 0) {
-                if (input.charAt(i) == '\"') {
-                    return StringUtil.unEscape(input.substring(i + 1, j));
-                } else return input.substring(i, j + 1);
+            if (count == 0) {
+                char nextChar = (j + 1 < input.length()) ? input.charAt(j + 1) : ',';
+                if (nextChar == ',' || nextChar == '}' || nextChar == ']' || j + 1 >= input.length()) {
+                    if (input.charAt(i) == '\"') {
+                        return StringUtil.unEscape(input.substring(i + 1, j));
+                    } else return input.substring(i, j + 1);
+                }
             }
         }
         return defaultValue;

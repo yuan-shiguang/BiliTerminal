@@ -36,14 +36,21 @@ public class OpusApi {
         else url = "https://www.bilibili.com/read/cv" + id;
         try {
             Response response = NetWorkUtil.get(url);
-            if (id <= 100000000)
-                response = NetWorkUtil.get(response.headers().get("location")); // 访问/read/cv[id]的话会重定向到/opus/，这里要手动“重定向”，因为OkHTTP不认。
+            // /read/cv{id} 有多层301重定向（加斜杠、跳转到/opus/），循环跟随直到拿到最终页面
+            for (int i = 0; i < 5; i++) {
+                String location = response.header("Location");
+                if (location == null || location.isEmpty()) break;
+                response.close();
+                response = NetWorkUtil.get(location);
+            }
             ResponseBody responseBody = response.body();
             if (responseBody == null) return opus;
 
             String html = responseBody.string();
 
-            JSONObject detail = new JSONObject(JsonUtil.search(html, "detail", ""));  //效率不高 能用就行 死去的jsonUtil居然还能发光发热
+            String detailStr = JsonUtil.search(html, "detail", "");
+            if (detailStr.isEmpty()) return opus;
+            JSONObject detail = new JSONObject(detailStr);
 
             JSONObject basic = detail.optJSONObject("basic");
             if (basic != null) {

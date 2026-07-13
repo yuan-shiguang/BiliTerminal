@@ -10,6 +10,10 @@ android {
     //noinspection GradleDependency
     compileSdk 33
 
+    buildFeatures {
+        buildConfig true
+    }
+
     sourceSets {
         main{
             jniLibs.srcDirs = ['libs']
@@ -24,8 +28,8 @@ android {
         minSdk 14
         //noinspection ExpiredTargetSdkVersion
         targetSdk 26
-        versionCode 20260630
-        versionName "3.0.2-Qx"
+        versionCode 20260731
+        versionName "3.0.3-Qx"
 
         if (betaVer) {
             versionName += "-BETA" + betaVer

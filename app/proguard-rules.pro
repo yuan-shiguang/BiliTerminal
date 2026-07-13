@@ -24,6 +24,7 @@
 -keep class com.RobinNotBad.BiliClient.** {*;}
 -keep class tv.danmaku.ijk.media.** {*;}
 -keep class com.netease.hearttouch.brotlij.** {*;}
+-keep class master.flame.danmaku.** {*;}
 
 -keepattributes *Annotation*
 -keepclassmembers class * {

@@ -19,12 +19,12 @@ apply plugin: 'com.android.library'
 def SourcePath = 'src/main/'
 
 android {
-    compileSdkVersion 33
+    namespace 'master.flame.danmaku'
+    compileSdk 33
 
     buildTypes {
         release {
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            minifyEnabled false
         }
     }
     sourceSets {
