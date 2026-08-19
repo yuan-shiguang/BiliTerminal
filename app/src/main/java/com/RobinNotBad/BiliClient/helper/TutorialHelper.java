@@ -147,6 +147,26 @@ public class TutorialHelper {
         }
     }
 
+    /** 教程色：token 名或旧 hex 映射到当前色板，避免 Span 露出写死白/蓝 */
+    private static int resolveTutorialColor(String color) {
+        com.RobinNotBad.BiliClient.theme.ThemePalette p =
+                com.RobinNotBad.BiliClient.theme.ThemeManager.palette();
+        if (color == null) return p.textPrimary;
+        String c = color.trim();
+        if ("accent".equals(c) || "link".equals(c)) return p.accent;
+        if ("textPrimary".equals(c) || "text".equals(c)) return p.textPrimary;
+        try {
+            int parsed = Color.parseColor(c);
+            int r = (parsed >> 16) & 0xFF, g = (parsed >> 8) & 0xFF, b = parsed & 0xFF;
+            int max = Math.max(r, Math.max(g, b));
+            int min = Math.min(r, Math.min(g, b));
+            if (min >= 0xB8 && (max - min) <= 0x2F) return p.textPrimary;
+            return p.accent;
+        } catch (Exception ignored) {
+            return p.textPrimary;
+        }
+    }
+
     /**
      * 用于解析教程中的文本内容
      *
@@ -159,7 +179,7 @@ public class TutorialHelper {
             if (text.type == 0) {
                 int old_len = str.length();
                 str.append(text.text);
-                str.setSpan(new ForegroundColorSpan(Color.parseColor(text.color)), old_len, str.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                str.setSpan(new ForegroundColorSpan(resolveTutorialColor(text.color)), old_len, str.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 switch (text.style) {
                     case "bold": //粗体
                         str.setSpan(new StyleSpan(Typeface.BOLD), old_len, str.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);

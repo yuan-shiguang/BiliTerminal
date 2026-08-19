@@ -174,8 +174,9 @@ public class UserDynamicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         public void setFollowed(boolean followed) {
             msgBtn.setVisibility((followed ? View.VISIBLE : View.GONE));
+            com.RobinNotBad.BiliClient.theme.ThemePalette tp = com.RobinNotBad.BiliClient.theme.ThemeManager.palette();
             followBtn.setBackgroundTintList(ColorStateList
-                    .valueOf((followed ? Color.argb(0xDD, 0x26, 0x26, 0x26) : Color.argb(0xFE, 0xF0, 0x5D, 0x8E))));
+                    .valueOf(followed ? tp.buttonTint : tp.accent));
             followBtn.setText((followed ? "已关注" : "关注"));
         }
 

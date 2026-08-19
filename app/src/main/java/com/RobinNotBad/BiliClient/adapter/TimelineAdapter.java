@@ -87,6 +87,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.DayVie
                                 .sizeMultiplier(0.85f))
                         .into(cover);
                 
+                com.RobinNotBad.BiliClient.theme.ThemeApplier.applyContent(episodeView);
                 holder.episodesLayout.addView(episodeView);
             }
         }

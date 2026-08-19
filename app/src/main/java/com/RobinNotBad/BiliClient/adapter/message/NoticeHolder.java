@@ -77,6 +77,7 @@ public class NoticeHolder extends RecyclerView.ViewHolder {
                 context.startActivity(intent);
             });
             avaterList.addView(imageView);
+            com.RobinNotBad.BiliClient.theme.ThemeApplier.applyContent(imageView);
 
             TextView nickView = new TextView(context);
             nickView.setText(message.user.get(i).name);
@@ -85,6 +86,7 @@ public class NoticeHolder extends RecyclerView.ViewHolder {
             nickView.setLayoutParams(new ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT, ToolsUtil.dp2px(32)));
             avaterList.addView(nickView);
+            com.RobinNotBad.BiliClient.theme.ThemeApplier.applyContent(nickView);
 
             //这个View什么都没有，用来当间隔的
             View view = new View(context);
@@ -104,6 +106,7 @@ public class NoticeHolder extends RecyclerView.ViewHolder {
             VideoCard childVideoCard = message.videoCard;
             VideoCardHolder holder = new VideoCardHolder(View.inflate(context, R.layout.cell_dynamic_video, extraCard));
             holder.showVideoCard(childVideoCard, context);
+            com.RobinNotBad.BiliClient.theme.ThemeApplier.applyContent(holder.itemView);
             holder.itemView.findViewById(R.id.videoCardView).setOnClickListener(view ->
                     TerminalContext.getInstance().enterVideoDetailPage(context, 0, childVideoCard.bvid)
             );
@@ -112,6 +115,7 @@ public class NoticeHolder extends RecyclerView.ViewHolder {
             Reply childReply = message.replyInfo != null ? message.replyInfo : message.dynamicInfo;
             ReplyCardHolder holder = new ReplyCardHolder(View.inflate(context, R.layout.cell_message_reply, extraCard));
             holder.showReplyCard(childReply);
+            com.RobinNotBad.BiliClient.theme.ThemeApplier.applyContent(holder.itemView);
             holder.itemView.findViewById(R.id.cardView).setOnClickListener(view -> {
                 try {
                     // 所有消息类型统一用 contentUri 导航（完全参照 PiliPlus URI 路由）

@@ -36,7 +36,7 @@
             <type>0</type>
             <text>可以返回上一页或打开菜单</text>
             <style>bold</style>
-            <color>#4a8eca</color>
+            <color>accent</color>
         </item>
         <item>
             <type>1</type>

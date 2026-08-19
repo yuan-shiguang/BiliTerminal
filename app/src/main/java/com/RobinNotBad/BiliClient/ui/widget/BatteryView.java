@@ -54,9 +54,13 @@ public class BatteryView extends View {
         int fill_right = (int) ((battery_width - inside_padding) * power_percent);
         int fill_bottom = battery_height - inside_padding;
 
+        com.RobinNotBad.BiliClient.theme.ThemePalette dp =
+                com.RobinNotBad.BiliClient.theme.ThemeManager.paletteDark();
+        int frame = dp.textPrimary;
+
         //边框
         Paint paint = new Paint();
-        paint.setColor(Color.WHITE);
+        paint.setColor(frame);
         paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(stroke_width);
@@ -72,8 +76,8 @@ public class BatteryView extends View {
 
         //画电量
         paint.setStrokeWidth(0f);
-        paint.setColor(mCharging ? Color.GREEN :
-                (mPower <= 20 ? Color.RED : Color.WHITE));
+        paint.setColor(mCharging ? dp.success :
+                (mPower <= 20 ? Color.RED : frame));
 
         if (power_percent != 0) {
             Rect fill = new Rect(fill_left, fill_top, fill_right, fill_bottom);

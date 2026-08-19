@@ -182,7 +182,8 @@ public class ReplyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         .append(" ");
                 name_str.setSpan(
                         new RadiusBackgroundSpan(2, (int) context.getResources().getDimension(R.dimen.round_small),
-                                Color.WHITE, Color.argb(140, 158, 186, 232)),
+                                com.RobinNotBad.BiliClient.theme.ThemeManager.palette().selectedText,
+                                com.RobinNotBad.BiliClient.theme.ThemeManager.palette().accentLow),
                         last_length + 1, name_str.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 name_str.setSpan(new RelativeSizeSpan(0.8f), last_length + 1, name_str.length(),
                         Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -208,10 +209,14 @@ public class ReplyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 replyHolder.likeCount.setTextColor(com.RobinNotBad.BiliClient.theme.ThemeManager.palette().accent);
                 replyHolder.likeCount.setCompoundDrawablesWithIntrinsicBounds(
                         ContextCompat.getDrawable(context, R.drawable.icon_reply_like1), null, null, null);
+                com.RobinNotBad.BiliClient.theme.ThemeApplier.retintCompound(replyHolder.likeCount,
+                        com.RobinNotBad.BiliClient.theme.ThemeManager.palette().accent);
             } else {
                 replyHolder.likeCount.setTextColor(com.RobinNotBad.BiliClient.theme.ThemeManager.palette().textTransparent);
                 replyHolder.likeCount.setCompoundDrawablesWithIntrinsicBounds(
                         ContextCompat.getDrawable(context, R.drawable.icon_reply_like0), null, null, null);
+                com.RobinNotBad.BiliClient.theme.ThemeApplier.retintCompound(replyHolder.likeCount,
+                        com.RobinNotBad.BiliClient.theme.ThemeManager.palette().textPrimary);
             }
 
             if (reply.childCount != 0 && !(realPosition == 0 && isDetail)) {
@@ -251,6 +256,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                             TextView newTextView = (TextView) LayoutInflater.from(context)
                                     .inflate(R.layout.cell_reply_child, null);
                             replyHolder.childReplies.addView(newTextView);
+                            com.RobinNotBad.BiliClient.theme.ThemeApplier.applyContent(newTextView);
                             textView = newTextView;
                         }
                         textView.setText(childMsg);
@@ -326,6 +332,8 @@ public class ReplyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                                 replyHolder.likeCount.setCompoundDrawablesWithIntrinsicBounds(
                                         ContextCompat.getDrawable(context, R.drawable.icon_reply_like1), null, null,
                                         null);
+                                com.RobinNotBad.BiliClient.theme.ThemeApplier.retintCompound(replyHolder.likeCount,
+                                        com.RobinNotBad.BiliClient.theme.ThemeManager.palette().accent);
                             });
                         } else
                             ((Activity) context).runOnUiThread(() -> MsgUtil.showMsg("点赞失败"));
@@ -345,6 +353,8 @@ public class ReplyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                                 replyHolder.likeCount.setCompoundDrawablesWithIntrinsicBounds(
                                         ContextCompat.getDrawable(context, R.drawable.icon_reply_like0), null, null,
                                         null);
+                                com.RobinNotBad.BiliClient.theme.ThemeApplier.retintCompound(replyHolder.likeCount,
+                                        com.RobinNotBad.BiliClient.theme.ThemeManager.palette().textPrimary);
                             });
                         } else
                             ((Activity) context).runOnUiThread(() -> MsgUtil.showMsg("取消失败"));
