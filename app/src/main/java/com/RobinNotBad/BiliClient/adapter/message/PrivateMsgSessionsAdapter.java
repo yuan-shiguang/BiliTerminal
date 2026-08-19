@@ -2,7 +2,6 @@ package com.RobinNotBad.BiliClient.adapter.message;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -42,8 +41,6 @@ public class PrivateMsgSessionsAdapter
     final ArrayList<PrivateMsgSession> sessionsList;
     final HashMap<Long, UserInfo> userMap;
     private final int cardRoundRadius;
-    private static final int BADGE_TEXT_COLOR = Color.WHITE;
-    private static final int BADGE_BG_COLOR = Color.rgb(207, 75, 95);
     private static final String BADGE_TEXT = "  未读 ";
 
     public PrivateMsgSessionsAdapter(Context context, ArrayList<PrivateMsgSession> sessionsList,
@@ -118,8 +115,9 @@ public class PrivateMsgSessionsAdapter
                 SpannableStringBuilder nameStr = new SpannableStringBuilder(displayName);
                 int nameLength = displayName.length();
                 nameStr.append(BADGE_TEXT);
+                com.RobinNotBad.BiliClient.theme.ThemePalette tp = com.RobinNotBad.BiliClient.theme.ThemeManager.palette();
                 nameStr.setSpan(
-                        new RadiusBackgroundSpan(1, cardRoundRadius, BADGE_TEXT_COLOR, BADGE_BG_COLOR),
+                        new RadiusBackgroundSpan(1, cardRoundRadius, tp.selectedText, tp.accent),
                         nameLength + 1, nameStr.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
                 holder.nameText.setText(nameStr);
             } else {

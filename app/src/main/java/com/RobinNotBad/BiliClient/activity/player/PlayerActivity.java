@@ -1732,7 +1732,8 @@ public class PlayerActivity extends Activity implements IjkMediaPlayer.OnPrepare
             com.RobinNotBad.BiliClient.theme.ThemeCompat.tintSeekBar(seekbar_progress, tint.accent);
             if (android.os.Build.VERSION.SDK_INT >= 21) {
                 seekbar_progress.setProgressTintList(android.content.res.ColorStateList.valueOf(tint.accent));
-                seekbar_progress.setSecondaryProgressTintList(android.content.res.ColorStateList.valueOf(0xEEFFFFFF));
+                seekbar_progress.setSecondaryProgressTintList(android.content.res.ColorStateList.valueOf(
+                        com.RobinNotBad.BiliClient.theme.ThemeManager.paletteDark().textTransparent));
             }
         });
     }

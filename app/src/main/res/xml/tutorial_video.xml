@@ -15,13 +15,13 @@
             <type>0</type>
             <text>可以左右滑动，</text>
             <style>bold</style>
-            <color>#4a8eca</color>
+            <color>accent</color>
         </item>
         <item>
             <type>0</type>
             <text>共三页</text>
             <style>underline</style>
-            <color>#4a8eca</color>
+            <color>accent</color>
         </item>
         <item>
             <type>1</type>

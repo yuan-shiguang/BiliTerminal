@@ -44,7 +44,6 @@ import java.util.Map;
  * 视图树染色器：挂在 BaseActivity.setContentView / BaseFragment.onViewCreated /
  * AbstractAdapter 三个扼点上。规则保守——只染"当前等于默认值"的视图，
  * 保护 VIP 粉、业务色等；topbar id 恒染。
- * 内置深色主题下强调色类染一律跳过（保证与现状逐像素一致）。
  */
 public class ThemeApplier {
 
@@ -52,6 +51,8 @@ public class ThemeApplier {
     private static final int DEFAULT_TEXT = 0xFFEBE0E2;
     private static final int DEFAULT_TEXT_TRANSPARENT = 0x50FEFEFE;
     private static final int DEFAULT_BUTTON_BG = 0xCC262626;
+    /** 用户页关注/私信等按钮的另一档默认灰 */
+    private static final int DEFAULT_BUTTON_BG_ALT = 0xDD262626;
 
     /** 背景图解码缓存：key=文件路径+采样，SoftReference 防内存压力 */
     private static final Map<String, SoftReference<Bitmap>> BG_CACHE = new HashMap<>();
@@ -215,7 +216,7 @@ public class ThemeApplier {
 
     // ---------------------------------------------------------------- 内容染色
 
-    /** 应用内容染色（幂等：generation 一致则跳过） */
+    /** 应用内容染色（已打标节点跳过自身，仍走进未打标的后加子视图） */
     public static void applyContent(View root) {
         ThemeManager tm = ThemeManager.getInstance();
         if (tm == null) return;
@@ -233,14 +234,11 @@ public class ThemeApplier {
         apply(root, tm.getGeneration(), tm.getPaletteDark(), true);
     }
 
-    /** 适配器 bind 时调用：generation 过期才重染 */
+    /** 适配器 attach/bind：已打标则不重染自身，仍递归未打标孩子 */
     public static void refreshIfStale(View root) {
         ThemeManager tm = ThemeManager.getInstance();
         if (tm == null || root == null) return;
-        int generation = tm.getGeneration();
-        Object tag = root.getTag(R.id.theme_applied_gen);
-        if (tag instanceof Integer && ((Integer) tag) == generation) return;
-        apply(root, generation, tm.getPalette(), false);
+        apply(root, tm.getGeneration(), tm.getPalette(), false);
     }
 
     private static void apply(View view, int generation, ThemePalette p, boolean forceDark) {
@@ -250,7 +248,9 @@ public class ThemeApplier {
         if (view.getClass().getName().contains("Danmaku")) return; // 弹幕渲染面
 
         hookRecyclerView(view, forceDark);
-        tintView(view, p);
+        Object tag = view.getTag(R.id.theme_applied_gen);
+        boolean already = tag instanceof Integer && ((Integer) tag) == generation;
+        if (!already) tintView(view, p);
 
         if (view instanceof ViewGroup) {
             ViewGroup group = (ViewGroup) view;
@@ -317,7 +317,12 @@ public class ThemeApplier {
 
         if (view instanceof MaterialCardView) {
             MaterialCardView card = (MaterialCardView) view;
-            card.setCardBackgroundColor(p.surfaceCard);
+            int cardBg = card.getCardBackgroundColor().getDefaultColor();
+            // bind 已写成强调色/当前表面色（如私信气泡）则不覆盖，只收默认灰/近白
+            if (!sameRgb(cardBg, p.accent) && !sameRgb(cardBg, p.surfaceCard)
+                    && (isDefaultSurface(cardBg) || nearWhiteNeutral(cardBg))) {
+                card.setCardBackgroundColor(p.surfaceCard);
+            }
             card.setStrokeColor(p.gray);
             return;
         }
@@ -422,8 +427,7 @@ public class ThemeApplier {
                 textView.setTextColor(p.textTransparent);
             } else if (color == 0xFF66CCFF) { // @color/link
                 textView.setTextColor(p.link);
-            } else if (color == 0xFBFB8787 || color == 0xFFFE679A || color == 0xFFFB7299 || color == 0xFFFF6699
-                    || color == 0xFFFF5722) {
+            } else if (isHistoricPink(color)) {
                 // 历史写死的各档粉色/警示橙（@color/pink、点赞数、删除收藏夹等）统一收编为强调色
                 textView.setTextColor(p.accent);
                 ThemeCompat.tintCompoundDrawables(textView, p.accent);
@@ -444,6 +448,33 @@ public class ThemeApplier {
         int max = Math.max(r, Math.max(g, b));
         int min = Math.min(r, Math.min(g, b));
         return max - min <= 0x2F && min >= 0x50 && max < 0xC0;
+    }
+
+    private static boolean sameRgb(int a, int b) {
+        return (a & 0x00FFFFFF) == (b & 0x00FFFFFF);
+    }
+
+    /** 默认卡片/按钮深灰底（#cc262626 / #dd262626 及同族） */
+    private static boolean isDefaultSurface(int color) {
+        if (color == DEFAULT_BUTTON_BG || color == DEFAULT_BUTTON_BG_ALT) return true;
+        int alpha = color >>> 24;
+        if (alpha < 0x60) return false;
+        int r = (color >> 16) & 0xFF, g = (color >> 8) & 0xFF, b = color & 0xFF;
+        int max = Math.max(r, Math.max(g, b));
+        int min = Math.min(r, Math.min(g, b));
+        return max - min <= 0x2F && max <= 0x40;
+    }
+
+    private static boolean isSaturatedColor(int color) {
+        int r = (color >> 16) & 0xFF, g = (color >> 8) & 0xFF, b = color & 0xFF;
+        return Math.max(r, Math.max(g, b)) - Math.min(r, Math.min(g, b)) >= 0x30;
+    }
+
+    private static boolean isHistoricPink(int color) {
+        return color == 0xFBFB8787 || color == 0xFFFE679A || color == 0xFFFB7299
+                || color == 0xFFFF6699 || color == 0xFFFF5722
+                || color == 0xFEF05D8E || color == 0xFFF05D8E
+                || color == 0xFBFB8799;
     }
 
     /** 染色判定缓存：int[]{kind, 代表alpha}；kind：0=跳过 1=近白中性 2=有彩度 3=灰阶中性 */
@@ -469,6 +500,19 @@ public class ThemeApplier {
         ThemeManager tm = ThemeManager.getInstance();
         if (tm == null) return;
         tintIconIfMonochrome(iv, tm.getPalette());
+    }
+
+    /** setImageResource + 立刻按色板重染，避免换图后露出旧粉 */
+    public static void setImage(ImageView iv, int resId) {
+        if (iv == null) return;
+        iv.setImageResource(resId);
+        retintImage(iv);
+    }
+
+    /** TextView 换复合图标后按指定色重染（评论/动态点赞态） */
+    public static void retintCompound(TextView tv, int color) {
+        if (tv == null) return;
+        ThemeCompat.tintCompoundDrawables(tv, color);
     }
 
     /** 换背景后按色板重染（状态切换专用，如分 P 选中底） */
@@ -530,10 +574,10 @@ public class ThemeApplier {
                         if (cs != null) MONO_ICON_CACHE.put(cs, c);
                     }
                     if (c[0] == ICON_SATURATED) {
-                        ThemeCompat.tintDrawable(state, p.accent);
+                        applyTintedBackgroundState(state, p.accent);
                     } else if (c[0] == ICON_GRAYSCALE) {
                         int rgb = c[1] < 0x60 ? ThemePalette.withAlpha(p.gray, 0xFF) : ThemePalette.withAlpha(p.surfaceCard, 0xFF);
-                        ThemeCompat.tintDrawable(state, ThemePalette.withAlpha(rgb, c[1]));
+                        applyTintedBackgroundState(state, ThemePalette.withAlpha(rgb, c[1]));
                     }
                 }
             }
@@ -547,10 +591,10 @@ public class ThemeApplier {
                     MONO_ICON_CACHE.put(cs, c);
                 }
                 if (c[0] == ICON_SATURATED) {
-                    ThemeCompat.tintDrawable(bg, p.accent);
+                    setTintedBackground(view, bg, p.accent);
                 } else if (c[0] == ICON_GRAYSCALE) {
                     int rgb = c[1] < 0x60 ? ThemePalette.withAlpha(p.gray, 0xFF) : ThemePalette.withAlpha(p.surfaceCard, 0xFF);
-                    ThemeCompat.tintDrawable(bg, ThemePalette.withAlpha(rgb, c[1]));
+                    setTintedBackground(view, bg, ThemePalette.withAlpha(rgb, c[1]));
                 }
             }
         }
@@ -624,20 +668,58 @@ public class ThemeApplier {
         }
     }
 
+    /** API&lt;21 wrap 会产生新实例，必须设回视图 */
+    private static void setTintedBackground(View view, Drawable original, int color) {
+        Drawable tinted = ThemeCompat.tintDrawable(original, color);
+        if (tinted != null && tinted != original) {
+            if (android.os.Build.VERSION.SDK_INT >= 16) view.setBackground(tinted);
+            else view.setBackgroundDrawable(tinted);
+        }
+    }
+
+    private static void applyTintedBackgroundState(Drawable state, int color) {
+        ThemeCompat.tintDrawable(state, color);
+    }
+
     private static void tintButton(Button button, ThemePalette p) {
         android.content.res.ColorStateList tint = null;
-        if (button instanceof AppCompatButton) {
+        if (button instanceof MaterialButton) {
+            tint = ((MaterialButton) button).getBackgroundTintList();
+        }
+        if (tint == null && button instanceof AppCompatButton) {
             tint = ((AppCompatButton) button).getSupportBackgroundTintList();
         }
-        // 接管两类按钮：
-        // - ButtonStyle 体系（backgroundTint=#cc262626）
-        // - 代码动态 new MaterialButton()（backgroundTint=?attr/colorPrimary=#ebe0e2，
-        //   无样式时走主题默认，若不接管会在任何主题下保持近白底色+主题文字）
-        // tint==null 说明有自定义 background drawable（弹幕发送/字幕芯片等），自成设计不动。
-        if (tint == null) return;
+        if (tint == null) {
+            tint = androidx.core.view.ViewCompat.getBackgroundTintList(button);
+        }
+        // tint==null：自定义 background（私信发送粉底等）。饱和单色收为 accent。
+        if (tint == null) {
+            Drawable bg = button.getBackground();
+            if (bg == null) return;
+            Drawable.ConstantState cs = bg.getConstantState();
+            int[] c = cs == null ? null : MONO_ICON_CACHE.get(cs);
+            if (c == null) {
+                c = classifyDrawable(bg);
+                if (cs != null) MONO_ICON_CACHE.put(cs, c);
+            }
+            if (c[0] == ICON_SATURATED) {
+                setTintedBackground(button, bg, p.accent);
+                if (isThemedTextColor(button.getCurrentTextColor())) {
+                    button.setTextColor(p.selectedText);
+                }
+            }
+            return;
+        }
         int def = tint.getDefaultColor();
-        if (def != DEFAULT_BUTTON_BG && def != DEFAULT_TEXT) return;
-        ThemeCompat.setBackgroundTintList(button, ThemeCompat.pressedStateList(p.buttonTint, p.buttonTint));
+        int fill;
+        if (sameRgb(def, p.buttonTint) || isDefaultSurface(def) || def == DEFAULT_TEXT || nearWhiteNeutral(def)) {
+            fill = p.buttonTint;
+        } else if (sameRgb(def, p.accent) || isHistoricPink(def) || isSaturatedColor(def)) {
+            fill = p.accent;
+        } else {
+            return;
+        }
+        ThemeCompat.setBackgroundTintList(button, ThemeCompat.pressedStateList(fill, fill));
         if (isThemedTextColor(button.getCurrentTextColor())) {
             button.setTextColor(p.selectedText);
         }

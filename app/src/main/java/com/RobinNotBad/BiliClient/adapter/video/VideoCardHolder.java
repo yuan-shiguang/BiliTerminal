@@ -2,7 +2,6 @@ package com.RobinNotBad.BiliClient.adapter.video;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Color;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
@@ -79,7 +78,7 @@ public class VideoCardHolder extends RecyclerView.ViewHolder {
                 break;
             case "series":
                 SpannableString sstr_series = new SpannableString("[系列]" + StringUtil.htmlToString(videoCard.title));
-                sstr_series.setSpan(new ForegroundColorSpan(Color.rgb(207, 75, 95)), 0, 4,
+                sstr_series.setSpan(new ForegroundColorSpan(com.RobinNotBad.BiliClient.theme.ThemeManager.palette().accent), 0, 4,
                         Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
                 title.setText(sstr_series);
                 break;

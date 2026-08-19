@@ -89,7 +89,9 @@ public class OpusParagraph {
             stringBuilder.append(analyzeText(child.optJSONObject("text")));
         }
 
-        stringBuilder.setSpan(new BackgroundColorSpan(0x33ffffff),
+        stringBuilder.setSpan(new BackgroundColorSpan(
+                        com.RobinNotBad.BiliClient.theme.ThemePalette.withAlpha(
+                                com.RobinNotBad.BiliClient.theme.ThemeManager.palette().textPrimary, 0x33)),
                 0, stringBuilder.length() - 1,
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 

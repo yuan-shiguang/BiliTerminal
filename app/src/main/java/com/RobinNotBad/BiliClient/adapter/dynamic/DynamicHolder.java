@@ -409,10 +409,14 @@ public class DynamicHolder extends RecyclerView.ViewHolder {
                     likeCount.setTextColor(com.RobinNotBad.BiliClient.theme.ThemeManager.palette().accent);
                     likeCount.setCompoundDrawablesWithIntrinsicBounds(
                             ContextCompat.getDrawable(context, R.drawable.icon_reply_like1), null, null, null);
+                    com.RobinNotBad.BiliClient.theme.ThemeApplier.retintCompound(likeCount,
+                            com.RobinNotBad.BiliClient.theme.ThemeManager.palette().accent);
                 } else {
                     likeCount.setTextColor(com.RobinNotBad.BiliClient.theme.ThemeManager.palette().textTransparent);
                     likeCount.setCompoundDrawablesWithIntrinsicBounds(
                             ContextCompat.getDrawable(context, R.drawable.icon_reply_like0), null, null, null);
+                    com.RobinNotBad.BiliClient.theme.ThemeApplier.retintCompound(likeCount,
+                            com.RobinNotBad.BiliClient.theme.ThemeManager.palette().textPrimary);
                 }
                 likeCount.setText(toWan(dynamic.stats.like));
             } else {
@@ -430,6 +434,8 @@ public class DynamicHolder extends RecyclerView.ViewHolder {
                                 likeCount.setCompoundDrawablesWithIntrinsicBounds(
                                         ContextCompat.getDrawable(context, R.drawable.icon_reply_like1), null, null,
                                         null);
+                                com.RobinNotBad.BiliClient.theme.ThemeApplier.retintCompound(likeCount,
+                                        com.RobinNotBad.BiliClient.theme.ThemeManager.palette().accent);
                             });
                         } else
                             ((Activity) context).runOnUiThread(() -> MsgUtil.showMsg("点赞失败"));
@@ -447,6 +453,8 @@ public class DynamicHolder extends RecyclerView.ViewHolder {
                                 likeCount.setCompoundDrawablesWithIntrinsicBounds(
                                         ContextCompat.getDrawable(context, R.drawable.icon_reply_like0), null, null,
                                         null);
+                                com.RobinNotBad.BiliClient.theme.ThemeApplier.retintCompound(likeCount,
+                                        com.RobinNotBad.BiliClient.theme.ThemeManager.palette().textPrimary);
                             });
                         } else
                             ((Activity) context).runOnUiThread(() -> MsgUtil.showMsg("取消失败"));

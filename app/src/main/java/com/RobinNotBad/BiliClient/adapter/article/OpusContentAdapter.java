@@ -234,9 +234,12 @@ public class OpusContentAdapter extends RecyclerView.Adapter<OpusContentAdapter.
                 likeLabel.setText(StringUtil.toWan(article.stats.like));
                 coinLabel.setText(StringUtil.toWan(article.stats.coin));
                 favLabel.setText(StringUtil.toWan(article.stats.favorite));
-                like.setImageResource(article.stats.liked ? R.drawable.icon_like_1 : R.drawable.icon_like_0);
-                coin.setImageResource(article.stats.coined > 0 ? R.drawable.icon_coin_1 : R.drawable.icon_coin_0);
-                fav.setImageResource(article.stats.favoured ? R.drawable.icon_fav_1 : R.drawable.icon_fav_0);
+                com.RobinNotBad.BiliClient.theme.ThemeApplier.setImage(like,
+                        article.stats.liked ? R.drawable.icon_like_1 : R.drawable.icon_like_0);
+                com.RobinNotBad.BiliClient.theme.ThemeApplier.setImage(coin,
+                        article.stats.coined > 0 ? R.drawable.icon_coin_1 : R.drawable.icon_coin_0);
+                com.RobinNotBad.BiliClient.theme.ThemeApplier.setImage(fav,
+                        article.stats.favoured ? R.drawable.icon_fav_1 : R.drawable.icon_fav_0);
 
                 View likeLayout = holder.itemView.findViewById(R.id.layout_like);
                 View coinLayout = holder.itemView.findViewById(R.id.layout_coin);
@@ -263,7 +266,7 @@ public class OpusContentAdapter extends RecyclerView.Adapter<OpusContentAdapter.
                                     likeLabel.setText(StringUtil.toWan(++article.stats.like));
                                 else
                                     likeLabel.setText(StringUtil.toWan(--article.stats.like));
-                                like.setImageResource(
+                                com.RobinNotBad.BiliClient.theme.ThemeApplier.setImage(like,
                                         article.stats.liked ? R.drawable.icon_like_1 : R.drawable.icon_like_0);
                             });
                         } else {
@@ -288,8 +291,7 @@ public class OpusContentAdapter extends RecyclerView.Adapter<OpusContentAdapter.
                                 context.runOnUiThread(() -> {
                                     MsgUtil.showMsg("投币成功！");
                                     coinLabel.setText(StringUtil.toWan(++article.stats.coin));
-                                    coin.setImageResource(R.drawable.icon_coin_1);
-                                com.RobinNotBad.BiliClient.theme.ThemeApplier.retintImage(coin);
+                                    com.RobinNotBad.BiliClient.theme.ThemeApplier.setImage(coin, R.drawable.icon_coin_1);
                                 });
                             } else {
                                 String msg = "投币失败：" + result;
@@ -311,12 +313,12 @@ public class OpusContentAdapter extends RecyclerView.Adapter<OpusContentAdapter.
                     try {
                         if (article.stats.favoured) {
                             if (ArticleApi.delFavorite(article.id) == 0) {
-                                context.runOnUiThread(() -> fav.setImageResource(R.drawable.icon_fav_0));
+                                context.runOnUiThread(() -> com.RobinNotBad.BiliClient.theme.ThemeApplier.setImage(fav, R.drawable.icon_fav_0));
                                 article.stats.favorite--;
                             }
                         } else {
                             if (ArticleApi.favorite(article.id) == 0) {
-                                context.runOnUiThread(() -> fav.setImageResource(R.drawable.icon_fav_1));
+                                context.runOnUiThread(() -> com.RobinNotBad.BiliClient.theme.ThemeApplier.setImage(fav, R.drawable.icon_fav_1));
                                 article.stats.favorite++;
                             }
                         }
